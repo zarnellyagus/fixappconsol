@@ -1,0 +1,239 @@
+<div class="sidebar" [class.collapsed]="isCollapsed">
+  <div class="sidebar-header">
+    <div class="logo-container">
+      <img src="assets/logo.png" alt="Logo" class="logo" *ngIf="!isCollapsed">
+      <img src="assets/logo-icon.png" alt="Logo" class="logo-icon" *ngIf="isCollapsed">
+    </div>
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <span class="material-icons">
+        {{ isCollapsed ? 'menu' : 'menu_open' }}
+      </span>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li class="nav-item" 
+          *ngFor="let item of menuItems; let i = index"
+          [class.active]="item.active"
+          (click)="setActiveMenu(i)">
+        <a class="nav-link" [routerLink]="item.route">
+          <span class="nav-icon material-icons">{{ item.icon }}</span>
+          <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<div class="sidebar-overlay" 
+     [class.show]="!isCollapsed" 
+     (click)="toggleSidebar()">
+</div>
+
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 280px;
+  background: linear-gradient(135deg, #FEBE10 0%, #f0a500 100%);
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+  transition: width 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+  overflow: hidden;
+
+  &.collapsed {
+    width: 70px;
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 15px;
+    background: #000;
+    min-height: 80px;
+    border-bottom: 2px solid #FEBE10;
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      flex: 1;
+
+      .logo {
+        height: 40px;
+        width: auto;
+        transition: all 0.3s ease;
+      }
+
+      .logo-icon {
+        height: 35px;
+        width: 35px;
+        margin: 0 auto;
+        transition: all 0.3s ease;
+      }
+    }
+
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      color: #FEBE10;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background: rgba(254, 190, 16, 0.1);
+        transform: scale(1.1);
+      }
+
+      .material-icons {
+        font-size: 24px;
+      }
+    }
+  }
+
+  .sidebar-nav {
+    padding: 20px 0;
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      .nav-item {
+        margin: 5px 15px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        position: relative;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.1);
+          transform: translateX(5px);
+        }
+
+        &.active {
+          background: rgba(0, 0, 0, 0.2);
+          
+          &::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60%;
+            background: #000;
+            border-radius: 2px;
+          }
+
+          .nav-link {
+            color: #000;
+            font-weight: 600;
+          }
+        }
+
+        .nav-link {
+          display: flex;
+          align-items: center;
+          padding: 15px 20px;
+          text-decoration: none;
+          color: #333;
+          font-size: 16px;
+          font-weight: 500;
+          transition: all 0.3s ease;
+          border-radius: 12px;
+
+          .nav-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            min-width: 24px;
+            transition: all 0.3s ease;
+          }
+
+          .nav-label {
+            white-space: nowrap;
+            transition: opacity 0.3s ease;
+          }
+        }
+      }
+    }
+  }
+
+  // Collapsed state styles
+  &.collapsed {
+    .sidebar-nav {
+      .nav-list {
+        .nav-item {
+          margin: 5px 10px;
+
+          .nav-link {
+            justify-content: center;
+            padding: 15px;
+
+            .nav-icon {
+              margin-right: 0;
+            }
+          }
+
+          &.active::before {
+            left: -10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+
+  &.show {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    
+    &:not(.collapsed) {
+      transform: translateX(0);
+    }
+  }
+}
+
+// Custom scrollbar
+.sidebar-nav {
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+  }
+}
